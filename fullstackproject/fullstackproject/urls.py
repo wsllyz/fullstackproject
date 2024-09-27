@@ -7,7 +7,7 @@ from home.views import homeView, cardapioView, formularioView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('home.urls')),
-    path('', homeView),
+    path('', homeView, name='homeView'),
     path('cardapio/', cardapioView, name='cardapioView'),
     path('formulario', formularioView, name='formularioView'),
 ]

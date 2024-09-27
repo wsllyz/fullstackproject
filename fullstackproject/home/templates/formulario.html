@@ -1,11 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário</title>
+    <title>Adicionar nova pizza</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-actions .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .form-actions .save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    
+
+    <div class="form-container">
+        <h2>Adicionar nova pizza</h2>
+        <form id="pizza-form">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="ingredientes">Ingredientes</label>
+                <textarea id="ingredientes" name="ingredientes" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="preco">Preço</label>
+                <input type="number" id="preco" name="preco" step="0.01" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="window.location.href='{% url 'homeView' %}'">Cancelar</button>
+                <button type="submit" class="save-btn">Salvar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('pizza-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const formData = new FormData(this);
+            const jsonData = Object.fromEntries(formData.entries());
+
+            // Envia a requisição POST para a API
+            fetch('http://localhost:8000/api/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Erro ao adicionar a pizza');
+                }
+            })
+            .then(data => {
+                console.log('Pizza adicionada:', data);
+                // Aqui você pode redirecionar para outra página ou mostrar uma mensagem de sucesso
+                window.location.href = '{% url 'homeView' %}'; // Redireciona após o sucesso
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao adicionar a pizza: ' + error.message);
+            });
+        });
+    </script>
 </body>
 </html>
